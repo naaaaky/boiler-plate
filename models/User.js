@@ -40,7 +40,7 @@ userSchema.pre('save', function (next) {
     var user = this;
 
     //isModified는 mongoose 내장함수
-    if (user.isModified('password')) {
+    if (user.isModified('password')) {  //비밀번호를 바꿀때
         //비밀번호를 암호화하는 작업
         bcrypt.genSalt(saltRounds, function (err, salt) {
             if (err) return next(err);
@@ -54,8 +54,20 @@ userSchema.pre('save', function (next) {
                 });
             }
         });
+    } else {
+        next();
     }
 });
+
+// 사용자가 입력한 패스워드(plainPassword)와 암호화된 패스워드가 일치하는지 비교하는 함수
+// 이미 암호화된 패스워드는 복호화할수 없으므로 plainPassword를 암호화하여 비교
+userSchema.methods.comparePassword = function(plainPassword, cb) {
+    // plainPassword 인자는 사용자가 입력한 패스워드
+    bcrypt.compare(plainPassword, this.password, function(err, isMatch) {
+        if(err) return cb((err));
+        cb(null, isMatch);  //null은 에러가 없다, isMatch는 일치여부 bool type
+    });
+};
 
 const User = mongoose.model('User', userSchema);
 

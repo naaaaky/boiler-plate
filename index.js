@@ -41,6 +41,32 @@ app.post('/register', (req, res) => {
   });  
 });
 
+app.post('/login', (req, res) => {
+    // 1. 요청된 이메일이 db에 있는지 쿼리
+    User.findOne({email: req.body.email}, (err, user) => {
+        if(!user) { 
+            // 일치하는 사용자가 없으면
+            return res.json({
+                loginSuccess: 'false',
+                message: '일치하는 사용자가 없습니다.'
+            });
+        } else {
+            // 2. 요청된 이메일이 db에 있다면 비밀번호가 일치하는지 확인.
+            // User 스키마를 정의한 User.js파일에 comparePassword 함수를 만든다.
+            user.comparePassword(req.body.password, (err, isMatch) => {
+                if(!isMatch) {
+                    return res.json({loginSuccess: 'false', message: '비밀번호가 일치하지 않습니다.'});
+                } else {
+                    // 3. 비밀번호가 일치하면 토큰 생성
+                    user.generateToken((err, user) => {
+                        
+                    });
+                }
+            });
+        }
+    });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
