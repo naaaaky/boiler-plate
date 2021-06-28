@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 
 const config = require('./config/key');
 
+const { auth } = require('./middleware/auth');
 const { User } = require('./models/User');
 
 // 미들웨어 함수를 로딩
@@ -28,7 +29,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.post('/register', (req, res) => {
+app.post('/api/users/register', (req, res) => {
   //회원가입 시 필요한 정보들을 client에서 가져오면 DB에 넣어준다
   const user = new User(req.body);
 
@@ -41,7 +42,7 @@ app.post('/register', (req, res) => {
   });
 });
 
-app.post('/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
   // 1. 요청된 이메일이 db에 있는지 쿼리
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!user) {
@@ -73,6 +74,26 @@ app.post('/login', (req, res) => {
         }
       });
     }
+  });
+});
+
+/*
+   - role
+   0 : 일반횐
+   1 : 대빵
+   2 : 운영자
+ */
+app.get('/api/users/auth', auth, (req, res) => {
+  // 미들웨어 함수를 통과하였으면 Authentication 결과가 true
+  res.status(200).json({
+    _id: req.user._id, //auth 미들웨어에서 req 객체에 user값을 넣어줬기 때문에 req 객체로 접근 가능
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image,
   });
 });
 
