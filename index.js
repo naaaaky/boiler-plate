@@ -97,6 +97,19 @@ app.get('/api/users/auth', auth, (req, res) => {
   });
 });
 
+//로그인이 된 상태에서 로그아웃을 하므로 auth 미들웨어를 사용
+app.get('/api/users/logout', auth, (req, res) => {
+  // findByIdAndUpdate : ObejctID로 쿼리 후 업데이트하는 메소드
+  // 첫번째 인자 - 쿼리할 필드 // auth 미들웨어에서 request 객체에 user데이터를 넘겨주었으므로 req.user로 꺼내쓴다.
+  // 두번째 인자 - 쿼리 후 업데이트할 필드명과 값
+  User.findByIdAndUpdate({ _id: req.user._id }, { token: '' }, (err, user) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).send({
+      success: true,
+    });
+  });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

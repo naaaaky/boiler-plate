@@ -82,13 +82,14 @@ userSchema.methods.generateToken = function (cb) {
   var token = jwt.sign(user._id.toHexString(), 'secretToken');
 
   user.token = token;
+  // User 콜렉션에 토큰을 저장하기 위해 save 메소드를 호출
   user.save(function (err, user) {
     if (err) return cb(err);
     cb(null, user);
   });
 };
 
-userSchema.methods.findByToken = function (token, cb) {
+userSchema.statics.findByToken = function (token, cb) {
   var user = this;
 
   // 토큰을 가져와서 복호화

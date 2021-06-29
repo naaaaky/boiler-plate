@@ -13,7 +13,7 @@ let auth = (req, res, next) => {
     // 일치하는 사용자가 없으면 아래의 json object를 반환
     if (!user) return res.json({ isAuth: false, error: true });
 
-    // 엔드포인트에서 사용하기 위해 request에 token과 user값을 넣어준다
+    // 엔드포인트(라우터)에서 사용하기 위해 request에 token과 user값을 넣어준다
     req.token = token;
     req.user = user;
     next(); //next()를 사용하여 미들웨어 함수가 끝나면 벗어나서 콜백함수 ㄱ
