@@ -3,16 +3,25 @@ const app = express();
 const port = 5000;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const config = require('./config/key');
 
 const { auth } = require('./middleware/auth');
 const { User } = require('./models/User');
 
+const cors_origin = ['http://localhost:3000']; //복수의 url 가능
+
 // 미들웨어 함수를 로딩
 app.use(bodyParser.urlencoded({ extended: true })); //application/x-www-form-urlencoded를 분석하여 가져오기 위한 설정
 app.use(bodyParser.json()); //application/json을 분석하여 가져오기 위한 설정
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: cors_origin, //허용하려는 request address
+    credentials: true, //설정한 내용을 response 헤더에 추가
+  }),
+);
 
 const mongoose = require('mongoose');
 mongoose
