@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LOGIN_USER } from './types';
+import { LOGIN_USER, REGISTER_USER } from './types';
 
 export function loginUser(param) {
   // console.log(param);
@@ -9,5 +9,15 @@ export function loginUser(param) {
   return {
     type: LOGIN_USER,
     payload: req,
+  };
+}
+
+export function registerUser(param) {
+  const req = axios.post('http://localhost:5000/api/users/register', param).then(res => res.data);
+
+  return {
+    type:REGISTER_USER,
+    payload: req,
+
   };
 }
