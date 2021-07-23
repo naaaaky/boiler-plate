@@ -19,7 +19,11 @@ function LoginPage(props) {
     //redux-promise와 redux-thunk module 때문에 dispatch에서 function과 promise사용이 가능하다.
     dispatch(loginUser(param)).then(res => {
       if(res.payload.loginSuccess) {
-        props.history.push('/');
+        if(res.payload.loginSuccess === 'true') {
+          props.history.push('/');
+        } else {
+          alert(res.payload.message);
+        }
       }
     });
   };
