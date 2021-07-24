@@ -95,8 +95,9 @@ userSchema.statics.findByToken = function (token, cb) {
   // 토큰을 가져와서 복호화
   jwt.verify(token, 'secretToken', function (err, decoded) {
     // 사용자 id로 사용자를 찾은 후 클라이언트단(cookie)의 token과 서버단(DB)의 token이 일치하는지 확인
-    // findOne 메소드의 첫번째 인자는 query, 두번째 인자는 반환하려는 필드
-    user.findOne({ _id: decoded, token: token }, function (err, user) {
+    // findOne 메소드의 첫번째 인자는 query (decoded가 undefined type으로 나와서 안씀)
+    // 두번째 인자는 반환하려는 필드
+    user.findOne({ token: token }, function (err, user) {
       if (err) return cb(err);
       else cb(null, user);
     });
